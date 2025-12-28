@@ -1,10 +1,8 @@
 from src.entities.user import User
+from src.presenters.saving_user_presenter import SavingUserPresenter
 from src.presenters.user_presenter import UserPresenter
-from src.presenters.user_view_model import UserViewModel
+from src.view_models.user_view_model import UserViewModel
 
-class SavingUserPresenter:
-    def present(self, user: User) -> UserViewModel:
-        return UserViewModel(full_name=f"{user.first_name} {user.last_name}")
 
 def test_user_presenter_creates_view_model():
     # Arrange
