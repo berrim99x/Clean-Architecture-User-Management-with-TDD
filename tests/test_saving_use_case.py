@@ -1,16 +1,27 @@
+from abc import ABCMeta, abstractmethod
 from unittest.mock import Mock
+from dataclasses import dataclass
 
 
+@dataclass
 class User:
-    pass
+    first_name: str
+    last_name: str
 
 
-class UserRepositoryInterface:
-    pass
+class UserRepositoryInterface(metaclass=ABCMeta):
+    @abstractmethod
+    def save(self, user: User) -> None:
+        pass
 
 
 class SavingUseCase:
-    pass
+    def __init__(self, user_repository):
+        self.user_repository = user_repository
+
+    def execute(self, user):
+        self.user_repository.save()
+
 
 
 def test_saving_user_is_calling_delegated_repository():
