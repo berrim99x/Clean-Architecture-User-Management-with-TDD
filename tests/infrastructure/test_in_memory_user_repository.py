@@ -1,9 +1,13 @@
 from src.entities.user import User
-from src.infrastructure.in_memory_user_repository import (
-    InMemoryUserRepository,
-)
+from src.repositories.user_repository_interface import UserRepositoryInterface
 
 
+class InMemoryUserRepository(UserRepositoryInterface):
+    def __init__(self):
+        self.users = []
+
+    def save(self, user):
+        self.users.append(user)
 def test_in_memory_user_repository_saves_user():
     # Arrange
     repository = InMemoryUserRepository()
