@@ -1,14 +1,6 @@
 from unittest.mock import Mock
 from src.entities.user import User
-from src.repositories.user_repository_interface import UserRepositoryInterface
-
-
-class MySQLUserRepository(UserRepositoryInterface):
-    def __init__(self, db_client):
-        self.db_client = db_client
-
-    def save(self, user):
-        self.db_client.insert_user(user)
+from src.infrastructure.mysql_user_repository import MySQLUserRepository
 
 
 def test_mysql_user_repository_saves_user_using_db_client():
