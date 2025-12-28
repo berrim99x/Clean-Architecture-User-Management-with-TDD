@@ -16,21 +16,25 @@ class CreateUserRequest(BaseModel):
     last_name: str
 
 
-# ===== Fake DB Client (Infrastructure detail) =====
+# ===== Infrastructure detail =====
 class FakeMySQLClient:
     def insert_user(self, user: User) -> None:
-        pass  # minimal: do nothing
+        pass
 
 
-# ===== Wiring (Composition Root) =====
-db_client = FakeMySQLClient()
-user_repository = MySQLUserRepository(db_client=db_client)
-presenter = SavingUserPresenter()
-use_case = SavingUseCase(
-    user_repository=user_repository,
-    presenter=presenter,
-)
-controller = SavingUserController(saving_use_case=use_case)
+# ===== Composition Root =====
+def build_saving_user_controller() -> SavingUserController:
+    db_client = FakeMySQLClient()
+    user_repository = MySQLUserRepository(db_client=db_client)
+    presenter = SavingUserPresenter()
+    use_case = SavingUseCase(
+        user_repository=user_repository,
+        presenter=presenter,
+    )
+    return SavingUserController(saving_use_case=use_case)
+
+
+controller = build_saving_user_controller()
 
 
 # ===== API Endpoint =====

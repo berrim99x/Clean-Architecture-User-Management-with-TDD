@@ -1,38 +1,45 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+
 from src.controllers.saving_user_controller import SavingUserController
-from src.entities.user import User
 from src.infrastructure.mysql_user_repository import MySQLUserRepository
 from src.presenters.saving_user_presenter import SavingUserPresenter
 from src.use_cases.saving_use_case import SavingUseCase
+from src.entities.user import User
+
+app = FastAPI()
+
+
+class CreateUserRequest(BaseModel):
+    first_name: str
+    last_name: str
 
 
 class FakeMySQLClient:
     def insert_user(self, user: User) -> None:
-        print(f"[MySQL] User saved: {user.first_name} {user.last_name}")
+        print(f"[MySQL] Saved user: {user.first_name} {user.last_name}")
 
 
-def main():
-    # Infrastructure
+def build_saving_user_controller() -> SavingUserController:
     db_client = FakeMySQLClient()
-    user_repository = MySQLUserRepository(db_client=db_client)
-
-    # Presenter
+    repository = MySQLUserRepository(db_client=db_client)
     presenter = SavingUserPresenter()
-
-    # Use Case
     use_case = SavingUseCase(
-        user_repository=user_repository,
+        user_repository=repository,
         presenter=presenter,
     )
+    return SavingUserController(saving_use_case=use_case)
 
-    # Controller
-    controller = SavingUserController(saving_use_case=use_case)
 
-    # Simulate request
-    controller.handle(
-        first_name="Abdelhakim",
-        last_name="Berrim",
+controller = build_saving_user_controller()
+
+
+@app.post("/users")
+def create_user(request: CreateUserRequest):
+    view_model = controller.handle(
+        first_name=request.first_name,
+        last_name=request.last_name,
     )
-
-
-if __name__ == "__main__":
-    main()
+    return {
+        "full_name": view_model.full_name
+    }
