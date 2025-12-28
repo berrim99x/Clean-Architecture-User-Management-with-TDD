@@ -15,6 +15,7 @@ class SavingUseCase(SavingUserUseCaseInterface):
         self.user_repository = user_repository
         self.presenter = presenter
 
-    def execute(self, user: User) -> None:
+    def execute(self, user: User):
         self.user_repository.save(user)
-        self.presenter.present(user)
+        return self.presenter.present(user)
+

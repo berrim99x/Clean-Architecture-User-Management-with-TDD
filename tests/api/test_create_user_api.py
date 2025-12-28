@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from src.main import app
+from src.main2 import app
 
 
 def test_create_user_endpoint():
