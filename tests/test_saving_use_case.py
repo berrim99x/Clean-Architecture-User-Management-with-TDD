@@ -1,21 +1,20 @@
-from unittest.mock import Mock
 import pytest
+from unittest.mock import Mock
 from src.entities.user import User
 from src.repositories.user_repository_interface import UserRepositoryInterface
+from src.presenters.user_presenter_interface import UserPresenterInterface
 from src.use_cases.saving_use_case import SavingUseCase
-
-class DummyPresenter:
-    def present(self, user):
-        pass
 
 
 def test_saving_user_is_calling_delegated_repository():
     # Arrange
     user = User(first_name="Abdelhakim", last_name="Berrim")
     spy_user_repository = Mock(spec=UserRepositoryInterface)
+    dummy_presenter = Mock(spec=UserPresenterInterface)
+
     saving_use_case = SavingUseCase(
         user_repository=spy_user_repository,
-        presenter=DummyPresenter()
+        presenter=dummy_presenter,
     )
 
     # Act
@@ -23,6 +22,7 @@ def test_saving_user_is_calling_delegated_repository():
 
     # Assert
     spy_user_repository.save.assert_called_once()
+
 
 @pytest.mark.parametrize(
     "user",
@@ -36,10 +36,11 @@ def test_saving_user_is_calling_delegated_repository():
 def test_saving_user_save_the_user_in_the_repository(user):
     # Arrange
     spy_user_repository = Mock(spec=UserRepositoryInterface)
+    dummy_presenter = Mock(spec=UserPresenterInterface)
 
     saving_use_case = SavingUseCase(
         user_repository=spy_user_repository,
-        presenter=DummyPresenter()
+        presenter=dummy_presenter,
     )
 
     # Act
@@ -52,13 +53,11 @@ def test_saving_user_save_the_user_in_the_repository(user):
 def test_saving_user_calls_presenter():
     # Arrange
     user = User(first_name="Abdelhakim", last_name="Berrim")
-    spy_user_repository = Mock(spec=UserRepositoryInterface)
-    spy_presenter = Mock()
-
-    from src.use_cases.saving_use_case import SavingUseCase
+    dummy_user_repository = Mock(spec=UserRepositoryInterface)
+    spy_presenter = Mock(spec=UserPresenterInterface)
 
     saving_use_case = SavingUseCase(
-        user_repository=spy_user_repository,
+        user_repository=dummy_user_repository,
         presenter=spy_presenter,
     )
 

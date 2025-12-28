@@ -1,8 +1,17 @@
+from src.entities.user import User
+from src.repositories.user_repository_interface import UserRepositoryInterface
+from src.presenters.user_presenter_interface import UserPresenterInterface
+
+
 class SavingUseCase:
-    def __init__(self, user_repository, presenter):
+    def __init__(
+        self,
+        user_repository: UserRepositoryInterface,
+        presenter: UserPresenterInterface,
+    ):
         self.user_repository = user_repository
         self.presenter = presenter
 
-    def execute(self, user):
+    def execute(self, user: User) -> None:
         self.user_repository.save(user)
         self.presenter.present(user)
